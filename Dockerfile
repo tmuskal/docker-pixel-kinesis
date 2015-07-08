@@ -16,13 +16,7 @@ RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
 
 RUN mkdir -p /var/log/supervisor
 
-ADD /server.conf /etc/nginx/sites-available/pixelserv
-RUN ln -s /etc/nginx/sites-available/pixelserv /etc/nginx/sites-enabled/pixelserv
-RUN rm /etc/nginx/sites-enabled/default
-
 RUN mkdir /etc/fluent
-
-ADD fluent.conf /etc/fluent/
 
 RUN ["/usr/local/bin/gem", "install", "fluent-plugin-kinesis", "--no-rdoc", "--no-ri"]
 
@@ -35,7 +29,13 @@ WORKDIR /etc/nginx
 
 # Define default command.
 
+ADD fluent.conf /etc/fluent/
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+ADD /server.conf /etc/nginx/sites-available/pixelserv
+RUN ln -s /etc/nginx/sites-available/pixelserv /etc/nginx/sites-enabled/pixelserv
+RUN rm /etc/nginx/sites-enabled/default
 
 # Expose ports.
 EXPOSE 80
