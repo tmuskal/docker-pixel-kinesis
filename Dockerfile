@@ -9,7 +9,7 @@ RUN apt-get upgrade -y
 RUN apt-get clean -y
 
 # tools
-RUN apt-get install nginx supervisor logrotate -y
+RUN apt-get install nginx supervisor cron logrotate -y
 
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
   chown -R www-data:www-data /var/lib/nginx
@@ -27,7 +27,9 @@ RUN apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Define working directory.
 WORKDIR /etc/nginx
 
-# Define default command.
+RUN chown root:root /etc/supervisor/conf.d/* /home/rsstank/uwsgi.ini /etc/crontab /etc/rsyslog.d/60-cron.conf
+
+RUN chmod 644 /etc/crontab
 
 ADD fluent.conf /etc/fluent/
 
@@ -45,7 +47,6 @@ ADD logrotate.nginx.conf    /etc/logrotate.d/nginx
 
 RUN chmod 644               /etc/logrotate.d/nginx && \
     chown root:root	        /etc/logrotate.d/nginx
-
 
 # Expose ports.
 EXPOSE 80
