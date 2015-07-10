@@ -27,7 +27,7 @@ RUN apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Define working directory.
 WORKDIR /etc/nginx
 
-RUN chown root:root /etc/supervisor/conf.d/* /home/rsstank/uwsgi.ini /etc/crontab /etc/rsyslog.d/60-cron.conf
+RUN chown root:root /etc/crontab
 
 RUN chmod 644 /etc/crontab
 
