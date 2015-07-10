@@ -9,7 +9,7 @@ RUN apt-get upgrade -y
 RUN apt-get clean -y
 
 # tools
-RUN apt-get install nginx supervisor -y
+RUN apt-get install nginx supervisor logrotate -y
 
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
   chown -R www-data:www-data /var/lib/nginx
@@ -33,9 +33,19 @@ ADD fluent.conf /etc/fluent/
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN echo "*/5 *	* * *	/usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontabs/root
+
 ADD /server.conf /etc/nginx/sites-available/pixelserv
+
 RUN ln -s /etc/nginx/sites-available/pixelserv /etc/nginx/sites-enabled/pixelserv
+
 RUN rm /etc/nginx/sites-enabled/default
+
+ADD logrotate.nginx.conf    /etc/logrotate.d/nginx
+
+RUN chmod 644               /etc/logrotate.d/nginx && \
+    chown root:root	        /etc/logrotate.d/nginx
+
 
 # Expose ports.
 EXPOSE 80
