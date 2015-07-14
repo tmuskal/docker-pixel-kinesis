@@ -35,7 +35,9 @@ ADD fluent.conf /etc/fluent/
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN echo "*/5 *	* * *	/usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontab
+ADD crontab /etc/cron.d/hello-cron
+
+RUN chmod 0644 /etc/cron.d/hello-cron
 
 ADD /server.conf /etc/nginx/sites-available/pixelserv
 
